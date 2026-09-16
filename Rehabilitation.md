@@ -20,6 +20,41 @@ Model
 | Maintenance | Tracks repair and routine inspection logs for a vehicle. | Associated `Vehicle`, assigned `Mechanic`, assigned `Driver`, repair date, service description, cost, parts replaced. |
 | Mechanic | Represents technical staff performing vehicle maintenance. Inherits core attributes from `Person`. | Specialization,  assigned `Maintenance` tasks, service history records. |
 
+# What do model classes contribute in my current system design?
+The model classes represent real world entities like in person the national ID number , 
+
+
+# TCMS Reverse Engineering — Person
+
+Date: 2026-09-16
+Project: Capital Commute
+Phase: Reverse Engineering
+Component: model.Person
+
+## Question
+
+What does Person represent in the original TCMS design?
+
+## Evidence
+
+[Put the actual fields, constructor, methods and inheritance evidence here.]
+
+## What I discovered
+
+[Your interpretation.]
+
+## What is still unknown
+
+[Things we haven't verified yet.]
+
+## Architectural observation
+
+[Anything interesting about how Person relates to the rest of the system.]
+
+## Git commit
+
+Not yet
+
 
 
 
