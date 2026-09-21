@@ -113,7 +113,7 @@ In particular, workspace.xml can contain local IDE/workspace configuration. Ther
 
 But we also don't need to manually delete .idea/ right now.
 
- # The next course of action is to inspect git ignore but take not of this first:
+ # The next course of action is to inspect git ignore but take note of this first:
 Run this command : .gitignore
 We are specifically looking for a root-level :
 ```powershell
@@ -159,7 +159,10 @@ Untracked files:
 ```text
     .idea/
 ```
-**Resolution:** I ma going to create one.
+**Resolution:**
+
+--
+I am going to create one.
 
 2.I have .class files in the repository root
 
