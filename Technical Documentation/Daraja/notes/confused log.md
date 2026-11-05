@@ -41,6 +41,37 @@ The phone call later is the callback. After the person enters their PIN, cancels
 The first response is about whether safaricom sent a prompt to the users one -the stk push
 
 **Now take it one step further. At the moment that first response comes back, what is the person holding the phone doing? Have they paid yet?**
-Nope they have received the prompt ; they can choose to pay ; input the correct pin or put a wrong pin or cancel the transaction or the person can ignore the prompt and let it time out. So there are four outcomes, and only one of them means money moved. Your app can’t know which one happened until the callback arrives.
+Nope they have received the prompt ; they can choose to pay ; input the correct pin or put a wrong pin or cancel the transaction or the person can ignore the prompt and let it time out.
+So there are four outcomes, and only one of them means money moved. Your app can’t know which one happened until the callback arrives.
+
+**Using curl.exe****on Windows if your postman is not a bitch** 
+the first errors were from curl: (3) URL rejected: Bad hostname
+https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials
+**So these next errors were like progress**
+curl: (3) URL rejected: Port number wasnot a decimal number between 0 and 65535 - THis was error from my computer -- curl: (3) URL rejected means curl never sent anything. It misread part of my command as a web address. Port numbers come after a colon, so curl probably saw KEY:SECRET and thought it was an address like website:port. That happens when the -u flag isn’t attached to the credentials, for example a typo in -u, a missing quote, or the credentials appearing before -u.
+{
+                    "requestId": "7b5f-4542-ac5d-78715e3756372965638",
+                    "errorCode": "400.008.01",
+                    "errorMessage": "Invalid Authentication passed"
+                } --- This one was from Safaricom --- The JSON response means my request actually reached Daraja. Its server answered “Invalid Authentication passed,” so it received credentials but didn’t accept them.
+
+The usual causes for the second error:
+
+- The placeholders are still in the command instead of your real key and secret.
+- A space, or a missing first or last character, crept in while copying.
+- The key and secret are swapped. The key comes first, then the colon, then the secret.
+- The key came from one app and the secret from another.
+
+  **Since I have now gotten my access token we can now talk about curl lol**
+
+  Curl is an open-source, command line tool for sending data. Many API clients include an option to import Curl code snippets, e.g:
+
+API Connector's Curl import tool
+Postman's Curl-to-Postman function
+These Curl import tools will automatically encode your credentials to base64 during the import process.
+So Imagine me on top of a matatu with a speaker yes it campaign season but this time I am campaigning about encryption . Base 64 is not encryption please  anybody can decode it that is why all API requests must go through https.Most API clients will automatically apply basic authentication if you enter your credentials as https://username:password@api.com
+curl.exe -v -u "YOUR_CONSUMER_KEY:YOUR_CONSUMER_SECRET" "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials" - Please do not leave spays between the key and the secret kitakuramba wewe .
+    
+
 
 
