@@ -116,6 +116,83 @@ curl.exe -X POST "URL" -H "Authorization: Bearer YOUR_ACCESS_TOKEN" -H "Content-
 A token can be regenerated with your secret and key but once a person has your secret and key 
 they inside your app .Your key and secret are the master keys: whoever has them can keep generating tokens forever until you change them. A token is a temporary pass. If it leaks, the damage is limited to about an hour, and then it’s useless. That’s why you use the master keys as rarely as possible and send the short-lived token with every request instead.
 
+# **Password Mixer**
+Please pay attention :
+1. Get the passkey and shortcode from the test credentials.
+2. Now it is time to be a mixer
+   *import base64
+from datetime import datetime
+
+shortcode = "YOUR_SHORTCODE"
+passkey = "YOUR_PASSKEY"
+timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+
+raw = shortcode + passkey + timestamp
+password = base64.b64encode(raw.encode()).decode()
+
+print("Timestamp:", timestamp)
+print("Password:", password)*
+
+
+What each part does:
+
+- **datetime.now().strftime(...)** gets the current time and writes it in the YYYYMMDDHHmmss format Safaricom expects.
+- **shortcode + passkey + timestamp** joins the three ingredients in the right order.
+- **.encode()** turns the text into bytes, because Base64 works on bytes, not text.
+base64.b64encode(...) encodes it, and .decode() turns the result back into normal text you can copy.
+
+**Summary**: the script builds your password from the shortcode, passkey and current time, then prints both the password and the timestamp it used.
+
+**Mistakes I logged**
+1. “Can’t open file” usually means the terminal isn’t in the file’s folder - remedy just type python "name of your file in your code editor" - not the path friends .
+
+ **READER NOTE**
+ 1 . note: always copy the password and timestamp from the same run. One mismatched copy-paste is a classic way to get stuck.
+ When now you  have all three pieces you need: a token, a password and its timestamp. Time to send your own STK Push.
+
+ **The JSON for the POST**
+ Typing JSON straight into a PowerShell command is painful, because PowerShell mangles the quotes. So we’ll put the data in a file instead. In the same folder as your password script, create stk.json:
+
+json
+{
+  "BusinessShortCode": "YOUR_SHORTCODE",
+  "Password": "YOUR_PASSWORD",
+  "Timestamp": "YOUR_TIMESTAMP",
+  "TransactionType": "CustomerPayBillOnline",
+  "Amount": "1",
+  "PartyA": "2547XXXXXXXX",
+  "PartyB": "YOUR_SHORTCODE",
+  "PhoneNumber": "2547XXXXXXXX",
+  "CallBackURL": "https://example.com/callback",
+  "AccountReference": "Test001",
+  "TransactionDesc": "Test payment"
+}
+**Procedure**
+1.Password and Timestamp: run your script and copy both from the same run.
+2.PartyA and PhoneNumber: your own number. PartyA is who pays, and PhoneNumber is where the prompt appears.
+3.PartyB and phonenumber : the same shortcode again. This is who receives the money. And the same phone number - Do not let these trip you up .
+4.CallBackURL: leave it as the placeholder for now. You know what that means: the prompt will arrive, but the result will go nowhere. We’ll fix that next.
+5. AccountReference: keep it short. Daraja rejects an AccountReference longer than 12 characters with a cryptic error.
+
+**Now send it**
+*curl.exe -v -X POST "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest" -H "Authorization: Bearer YOUR_ACCESS_TOKEN" -H "Content-Type: application/json" -d "@stk.json"*
+
+The @ in -d "@stk.json" tells curl to read the data from the file. Keep the quotes around it, because in PowerShell a bare @ means something else.
+
+**Summary**: you’re sending a POST request with your Bearer token in a header and a JSON body from a file. The body contains your password, the timestamp you used to build it, and the payment details.
+
+**Please run a strict program here**
+Do not dare delete the bearer as you input you access token .
+
+
+
+ 
+ 
+3. 
+
+
+
+
 
 
 
