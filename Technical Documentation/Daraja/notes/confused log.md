@@ -61,7 +61,10 @@ The usual causes for the second error:
 - A space, or a missing first or last character, crept in while copying.
 - The key and secret are swapped. The key comes first, then the colon, then the secret.
 - The key came from one app and the secret from another.
-
+**Access Token**
+  
+  It expires in 59 minutes time just before an hour is depleted.
+  
   **Since I have now gotten my access token we can now talk about curl lol**
 
   Curl is an open-source, command line tool for sending data. Many API clients include an option to import Curl code snippets, e.g:
@@ -70,8 +73,55 @@ API Connector's Curl import tool
 Postman's Curl-to-Postman function
 These Curl import tools will automatically encode your credentials to base64 during the import process.
 So Imagine me on top of a matatu with a speaker yes it campaign season but this time I am campaigning about encryption . Base 64 is not encryption please  anybody can decode it that is why all API requests must go through https.Most API clients will automatically apply basic authentication if you enter your credentials as https://username:password@api.com
-curl.exe -v -u "YOUR_CONSUMER_KEY:YOUR_CONSUMER_SECRET" "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials" - Please do not leave spays between the key and the secret kitakuramba wewe .
-    
+curl.exe -v -u "YOUR_CONSUMER_KEY:YOUR_CONSUMER_SECRET" "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials" - Please do not leave spaces between the key and the secret kitakuramba wewe .
+
+**But what does that command mean**
+
+*curl.exe -v -u "KEY:SECRET" "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"*
+
+- **curl.exe**: the program. It sends a request to a web address and shows you what comes back, like a browser without the visuals. On Windows you add .exe so PowerShell doesn’t confuse it with a different command.
+- **-v**: verbose. It shows you everything curl sends and receives, including the headers. Lines starting with > are what you sent; lines starting with < are what came back.
+- **-u "KEY:SECRET"**: user credentials. Curl joins them with a colon, Base64-encodes them, and puts them in a header called Authorization: Basic ....
+
+**When you remove u** - you will get bad request in  your output . Safaricom rejects it because it had no way to know who was asking. This error usually means that this error usually means missing or wrong credentials .
+
+- **The URL**: where the request goes. The part after ? (grant_type=client_credentials) is extra information sent along with the request. Here, it tells Safaricom, “I’m an app proving who I am with my own credentials.”
+ You didn’t type**GET** anywhere, but curl sends a GET request by default. GET means “give me something,” and here you’re asking for a token.
+
+**Summary**: curl sent a GET request to Safaricom’s token address, carrying your Base64-encoded key and secret in a header. Safaricom checked them and sent back a token that lasts about an hour.
+
+# **Password**
+So Safaricom has decided it is not going to an enabler of lazy developers - yes you read that right karibu Kenya.
+To send a payment prompt, Safaricom needs to know which business is asking for money. The password proves that. You don’t receive it ready-made; you make it yourself, like mixing a recipe or cooking your own food - Safaricom is not offering  takeouts .
+
+The recipe has three ingredients:
+
+Shortcode: the business’s number. For the sandbox, Safaricom gives you a test one.
+Passkey: a long secret code that goes with that shortcode. Also given to you for testing.
+Timestamp: today’s date and time written as one long number. For example, 5 November 2026 at 2:30 pm becomes 20261105143000.
+
+**How to mix them**: stick all three together in that order, like shortcode + passkey + timestamp, making one long string. Then encode it with Base64, the same scrambling curl did to your key and secret. The result is your password.
+
+**Lets take a look at post**
+curl.exe -X POST "URL" -H "Authorization: Bearer YOUR_ACCESS_TOKEN" -H "Content-Type: application/json" -d "{...data...}"
+- **X POST**: changes the request type from the default GET to POST.
+- **H "..."**: adds a header. You can use -H as many times as you need.
+    - **Authorization**: Bearer YOUR_ACCESS_TOKEN shows Safaricom the token you got. “Bearer”             means “whoever carries this token is allowed in.” Notice the change: you used Basic with          your key and secret to get the token, and now you use Bearer with the token itself.
+      - **Content-Type**: application/json tells Safaricom the data you’re sending is in JSON   format.
+        
+-d "...": the data itself, the body of the request.
+
+**KEY : SECRET VS ACCESS TOKEN**
+
+A token can be regenerated with your secret and key but once a person has your secret and key 
+they inside your app .Your key and secret are the master keys: whoever has them can keep generating tokens forever until you change them. A token is a temporary pass. If it leaks, the damage is limited to about an hour, and then it’s useless. That’s why you use the master keys as rarely as possible and send the short-lived token with every request instead.
 
 
 
+
+
+
+
+
+
+**
