@@ -1,4 +1,4 @@
-# Daraja API
+# Daraja API my scattered graph notes 
 
 **Procedure**
 
@@ -17,3 +17,5 @@
    and medium enterprises 
    
 7.Then name your sandboxed application and create it then copy your consumer key and consumer secret and passkey 
+
+ Go to APIs scroll down to lipa na M-Pesa and click - then simulate the API 
